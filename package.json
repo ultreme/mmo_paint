@@ -1,0 +1,16 @@
+{
+  "name": "mmo_paint",
+  "version": "0.0.1",
+  "description": "Massively multiplayer online painting",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tore D. Saue",
+  "license": "BSD",
+  "private": true,
+  "dependencies": {
+    "express": "3.4.8",
+    "socket.io": "0.9.16"
+  }
+}
