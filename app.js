@@ -19,7 +19,7 @@ var usernames = {};
 io.sockets.on('connection', function(socket){
   
   socket.on('sendpaint', function(data) {
-    io.socket.emit('updatepaint', socket.username, data);
+    io.sockets.emit('updatepaint', socket.username, data);
   });
 
   socket.on('adduser', function(username){
