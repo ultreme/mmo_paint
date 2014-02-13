@@ -1,20 +1,14 @@
-.userContainer {
+#user_container {
     float: left;
-    width: 200px;
-    border-right: 1px solid black;
+    width: 150px;
     height: 300px;
     padding: 10px;
     overflow:auto;
 }
 
-.conversationContainer {
+#paint {
     float: left;
-    width: 400px;
-    height: 300px;
-    overflow: auto;
-    padding: 10px;
-}
-
-#data{
-    width: 250px;
+    margin: 20px;
+    border: 1px solid black;
+    cursor: pointer;
 }

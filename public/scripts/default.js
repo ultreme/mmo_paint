@@ -1,4 +1,71 @@
-/// <reference path="../../scripts/jquery-2.0.3.js" />
+//Code for painting on canvas
+
+var context;
+var drawPoints = [];
+var historyPoints = [];
+var paint;
+
+$(document).ready(function () {
+    var canvas = document.getElementById('paint');
+    canvas.height = 400;
+    canvas.width = 600;
+    context = canvas.getContext("2d");
+    canvas.addEventListener('mousedown', ev_mousedown, false);
+    canvas.addEventListener('mousemove', ev_mousemove, false);
+    canvas.addEventListener('mouseup', drawFinished, false);
+    canvas.addEventListener('mouseleave', drawFinished, false);
+});
+
+function ev_mousedown(e) {
+    paint = true;
+    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+    draw();
+}
+
+function ev_mousemove(e) {
+    if (paint) {
+        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+        draw();
+    }
+}
+
+function drawFinished() {
+    paint = false;
+    drawPoints = [];
+}
+
+function addClick(x, y, dragging) {
+    var point = {"x": x, "y": y, "dragging": dragging};
+    drawPoints.push(point);
+    historyPoints.push(point);
+}
+
+function draw() {
+
+    setUserStyle();
+
+    for (var i=0; i < drawPoints.length; i++) { 
+        
+        context.beginPath();
+        if(drawPoints[i].dragging && i){
+            context.moveTo(drawPoints[i-1].x, drawPoints[i-1].y);
+        }else{
+            context.moveTo(drawPoints[i].x-1, drawPoints[i].y);
+        }
+        context.lineTo(drawPoints[i].x, drawPoints[i].y);
+        context.closePath();
+        context.stroke();
+    }
+  
+}
+
+function setUserStyle() {
+    context.strokeStyle = "#df4b26";
+    context.lineJoin = "round";
+    context.lineWidth = 5;
+}
+
+//Code for socket.io communication
 
 var socket;
 
