@@ -19,18 +19,19 @@ $(document).ready(function () {
 function ev_mousedown(e) {
     paint = true;
     addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-    draw();
+    draw(drawPoints);
 }
 
 function ev_mousemove(e) {
     if (paint) {
         addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-        draw();
+        draw(drawPoints);
     }
 }
 
-function drawFinished() {
+function drawFinished() {   
     paint = false;
+    sendMessage(drawPoints)
     drawPoints = [];
 }
 
@@ -40,19 +41,19 @@ function addClick(x, y, dragging) {
     historyPoints.push(point);
 }
 
-function draw() {
+function draw(points) {
 
     setUserStyle();
 
-    for (var i=0; i < drawPoints.length; i++) { 
+    for (var i=0; i < points.length; i++) { 
         
         context.beginPath();
-        if(drawPoints[i].dragging && i){
-            context.moveTo(drawPoints[i-1].x, drawPoints[i-1].y);
+        if(points[i].dragging && i){
+            context.moveTo(points[i-1].x, points[i-1].y);
         }else{
-            context.moveTo(drawPoints[i].x-1, drawPoints[i].y);
+            context.moveTo(points[i].x-1, points[i].y);
         }
-        context.lineTo(drawPoints[i].x, drawPoints[i].y);
+        context.lineTo(points[i].x, points[i].y);
         context.closePath();
         context.stroke();
     }
@@ -62,7 +63,7 @@ function draw() {
 function setUserStyle() {
     context.strokeStyle = "#df4b26";
     context.lineJoin = "round";
-    context.lineWidth = 5;
+    context.lineWidth = 3;
 }
 
 //Code for socket.io communication
@@ -74,8 +75,6 @@ $(document).ready(function () {
     socket.on('connect', addUser);
     socket.on('updatepaint', processMessage);
     socket.on('updateusers', updateUserList);
-    $('#datasend').click(sendMessage);
-    $('#data').keypress(processEnterPress);
 });
 
 function addUser() {
@@ -83,8 +82,7 @@ function addUser() {
 }
 
 function processMessage(username, data) {
-    $('<b>' + username + ':</b>' + data + '<br />')
-        .insertAfter($('#conversation'));
+    draw(data);
 }
 
 function updateUserList(data) {
@@ -94,17 +92,7 @@ function updateUserList(data) {
     });
 }
 
-function sendMessage() {
-    var message = $('#data').val();
-    $('#data').val('');
-    socket.emit('sendpaint', message);
-    $('#data').focus();
-}
-
-function processEnterPress(e) {
-    if(e.which == 13) {
-        e.preventDefault();
-        $(this).blur();
-        $('#datasend').focus().click();
-    }
+function sendMessage(points) {
+    if(points.lenght === 0) {return}
+    socket.emit('sendpaint', points);
 }
