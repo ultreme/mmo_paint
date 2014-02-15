@@ -14,7 +14,8 @@ app.get('/', function(req, res) {
   res.response.redirect('default.html');
 });
 
-var usernames = {};
+var users = {};
+var usercolors = ["#ff0000", "#00ff00"] //, "#0000ff", "#c49a1b", "#b63bcc", "#3ddbe3", "#f77502"]
 
 io.sockets.on('connection', function(socket){
   
@@ -23,20 +24,23 @@ io.sockets.on('connection', function(socket){
   });
 
   socket.on('adduser', function(username){
+    var user = createUser(username)
     socket.username = username;
-    usernames[username] = username;
-    socket.emit('updatepaint', 'SERVER', 'you have connected');
-    socket.broadcast.emit('updatepaint', 'SERVER', username + ' has connected.');
-    io.sockets.emit('updateusers', usernames);
+    users[username] = createUser(username);
+    io.sockets.emit('updateusers', users);
   });
 
   socket.on('disconnect', function() {
-    delete usernames[socket.username];
-    io.sockets.emit('updateusers', usernames);
-    socket.broadcast.emit('updatepaint', 'SERVER', socket.username + ' has disconnected');
+    delete users[socket.username];
+    io.sockets.emit('updateusers', users);
   });
 
 });
+
+function createUser(name) {
+  return {name: name,
+          color: usercolors[Object.keys(users).length % usercolors.length]}  
+}
 
 var port = 8080;
 server.listen(port);

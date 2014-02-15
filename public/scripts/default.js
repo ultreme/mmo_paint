@@ -88,7 +88,7 @@ function processMessage(username, data) {
 function updateUserList(data) {
     $('#users').empty();
     $.each(data, function (key, value) {
-        $('#users').append('<div>' + key + '</div>');
+        $('#users').append('<div style="color:' + value.color +'">' + value.name + '</div>');
     });
 }
 
