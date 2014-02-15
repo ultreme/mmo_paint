@@ -4,6 +4,7 @@ var context;
 var drawPoints = [];
 var historyPoints = [];
 var paint;
+var localuser = {};
 
 $(document).ready(function () {
     var canvas = document.getElementById('paint');
@@ -41,9 +42,11 @@ function addClick(x, y, dragging) {
     historyPoints.push(point);
 }
 
-function draw(points) {
-
-    setUserStyle();
+function draw(points, color) {
+    if(!color) {color = localuser.color;}
+    context.strokeStyle = color;
+    context.lineJoin = "round";
+    context.lineWidth = 3;
 
     for (var i=0; i < points.length; i++) { 
         
@@ -60,11 +63,6 @@ function draw(points) {
   
 }
 
-function setUserStyle() {
-    context.strokeStyle = "#df4b26";
-    context.lineJoin = "round";
-    context.lineWidth = 3;
-}
 
 //Code for socket.io communication
 
@@ -74,6 +72,7 @@ $(document).ready(function () {
     socket = io.connect('http://localhost:8080');
     socket.on('connect', addUser);
     socket.on('updatepaint', processMessage);
+    socket.on('setuser', setUser);
     socket.on('updateusers', updateUserList);
 });
 
@@ -81,8 +80,12 @@ function addUser() {
     socket.emit('adduser', prompt("What's your name?"));
 }
 
-function processMessage(username, data) {
-    draw(data);
+function processMessage(data, color) {
+    draw(data, color);
+}
+
+function setUser(data) {
+    localuser = data;
 }
 
 function updateUserList(data) {
