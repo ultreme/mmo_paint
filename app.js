@@ -26,6 +26,10 @@ io.sockets.on('connection', function(socket){
   });
 
   socket.on('adduser', function(username){
+    if(users[username]) {
+      socket.emit('retryusername', username)
+      return;
+    }
     var user = createUser(username)
     socket.username = username;
     users[username] = createUser(username);

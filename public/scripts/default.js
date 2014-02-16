@@ -77,10 +77,14 @@ $(document).ready(function () {
     socket.on('setuser', setUser);
     socket.on('updateusers', updateUserList);
     socket.on('clearpaint', clearPaint);
+    socket.on('retryusername', retryAddUser);
 });
 
-function addUser() {
-    socket.emit('adduser', prompt("What's your name?"));
+function addUser(text) {
+    if (!text) {
+        text = "What's your name?";
+    }
+    socket.emit('adduser', prompt(text));
 }
 
 function processMessage(data, color) {
@@ -89,6 +93,10 @@ function processMessage(data, color) {
 
 function setUser(data) {
     localuser = data;
+}
+
+function retryAddUser(name) {
+    addUser('Sorry, "' + name + '"' + ' already taken, try another user name.');
 }
 
 function updateUserList(data) {
