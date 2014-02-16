@@ -16,12 +16,13 @@ app.get('/', function(req, res) {
 
 var users = {};
 var usercolors = ["#ff0000", "#00ff00", "#0000ff", "#c49a1b", "#b63bcc", "#3ddbe3", "#f77502"];
+var colorindex = 0;
 var drawhistory = [];
 
 io.sockets.on('connection', function(socket){
   
   socket.on('sendpaint', function(data) {
-    io.sockets.emit('updatepaint', data, users[socket.username].color);
+    socket.broadcast.emit('updatepaint', data, users[socket.username].color);
     drawhistory.push({username: socket.username, data: data});
   });
 
@@ -32,7 +33,7 @@ io.sockets.on('connection', function(socket){
     }
     var user = createUser(username)
     socket.username = username;
-    users[username] = createUser(username);
+    users[username] = user;
     socket.emit('setuser', user);
     io.sockets.emit('updateusers', users);
     for (var i=0; i < drawhistory.length; i++) {
@@ -59,8 +60,10 @@ io.sockets.on('connection', function(socket){
 });
 
 function createUser(name) {
-  return {name: name,
-          color: usercolors[Object.keys(users).length % usercolors.length]};  
+  user = {name: name,
+          color: usercolors[colorindex % usercolors.length]};  
+  colorindex++;
+  return user;
 }
 
 var port = 8080;
