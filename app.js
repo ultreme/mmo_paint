@@ -16,11 +16,13 @@ app.get('/', function(req, res) {
 
 var users = {};
 var usercolors = ["#ff0000", "#00ff00", "#0000ff", "#c49a1b", "#b63bcc", "#3ddbe3", "#f77502"];
+var drawhistory = [];
 
 io.sockets.on('connection', function(socket){
   
   socket.on('sendpaint', function(data) {
     io.sockets.emit('updatepaint', data, users[socket.username].color);
+    drawhistory.push({username: socket.username, data: data});
   });
 
   socket.on('adduser', function(username){
@@ -29,9 +31,23 @@ io.sockets.on('connection', function(socket){
     users[username] = createUser(username);
     socket.emit('setuser', user);
     io.sockets.emit('updateusers', users);
+    for (var i=0; i < drawhistory.length; i++) {
+      socket.emit('updatepaint', drawhistory[i].data, users[drawhistory[i].username].color);
+    }
   });
 
   socket.on('disconnect', function() {
+    socket.broadcast.emit('clearpaint');
+    var temphistory = [];
+    for (var i=0; i < drawhistory.length; i++) {
+      if(drawhistory[i].username !== socket.username) {
+        temphistory.push(drawhistory[i]);
+      }
+    }
+    drawhistory = temphistory;
+    for (var i=0; i < drawhistory.length; i++) {
+      socket.broadcast.emit('updatepaint', drawhistory[i].data, users[drawhistory[i].username].color);
+    }
     delete users[socket.username];
     io.sockets.emit('updateusers', users);
   });

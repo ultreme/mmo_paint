@@ -2,7 +2,6 @@
 
 var context;
 var drawPoints = [];
-var historyPoints = [];
 var paint;
 var localuser = {};
 
@@ -39,7 +38,6 @@ function drawFinished() {
 function addClick(x, y, dragging) {
     var point = {"x": x, "y": y, "dragging": dragging};
     drawPoints.push(point);
-    historyPoints.push(point);
 }
 
 function draw(points, color) {
@@ -63,6 +61,10 @@ function draw(points, color) {
   
 }
 
+function clearPaint() {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+}
+
 
 //Code for socket.io communication
 
@@ -74,6 +76,7 @@ $(document).ready(function () {
     socket.on('updatepaint', processMessage);
     socket.on('setuser', setUser);
     socket.on('updateusers', updateUserList);
+    socket.on('clearpaint', clearPaint);
 });
 
 function addUser() {
