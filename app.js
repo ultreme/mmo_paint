@@ -20,7 +20,7 @@ var colorindex = 0;
 var drawhistory = [];
 
 io.sockets.on('connection', function(socket){
-  
+
   socket.on('sendpaint', function(data) {
     socket.broadcast.emit('updatepaint', data, users[socket.username].color);
     drawhistory.push({username: socket.username, data: data});
@@ -61,13 +61,11 @@ io.sockets.on('connection', function(socket){
 
 function createUser(name) {
   user = {name: name,
-          color: usercolors[colorindex % usercolors.length]};  
+          color: usercolors[colorindex % usercolors.length]};
   colorindex++;
   return user;
 }
 
 var port = 8080;
-server.listen(port);
+server.listen(port, '0.0.0.0');
 console.log('Listening on port: ' + port);
-
-

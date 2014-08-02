@@ -29,7 +29,7 @@ function ev_mousemove(e) {
     }
 }
 
-function drawFinished() {   
+function drawFinished() {
     paint = false;
     sendMessage(drawPoints)
     drawPoints = [];
@@ -46,8 +46,8 @@ function draw(points, color) {
     context.lineJoin = "round";
     context.lineWidth = 3;
 
-    for (var i=0; i < points.length; i++) { 
-        
+    for (var i=0; i < points.length; i++) {
+
         context.beginPath();
         if(points[i].dragging && i){
             context.moveTo(points[i-1].x, points[i-1].y);
@@ -58,7 +58,7 @@ function draw(points, color) {
         context.closePath();
         context.stroke();
     }
-  
+
 }
 
 function clearPaint() {
@@ -71,7 +71,7 @@ function clearPaint() {
 var socket;
 
 $(document).ready(function () {
-    socket = io.connect('http://localhost:8080');
+    socket = io.connect();
     socket.on('connect', addUser);
     socket.on('updatepaint', processMessage);
     socket.on('setuser', setUser);
