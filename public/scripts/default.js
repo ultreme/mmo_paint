@@ -71,7 +71,7 @@ function clearPaint() {
 var socket;
 
 $(document).ready(function () {
-    socket = io.connect();
+    socket = io.connect(':5821');
     socket.on('connect', addUser);
     socket.on('updatepaint', processMessage);
     socket.on('setuser', setUser);

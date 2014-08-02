@@ -76,6 +76,6 @@ createUser = (name) ->
   return user
 
 
-port = 8080
+port = 5821
 server.listen port, '0.0.0.0'
 console.log "Listening on port: #{port}"
