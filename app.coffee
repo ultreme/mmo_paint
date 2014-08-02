@@ -24,6 +24,7 @@ usercolors = [
 colorindex = 0
 drawhistory = []
 default_color = '#888888'
+limit = 100
 
 
 io.sockets.on 'connection', (socket) ->
@@ -31,6 +32,8 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'sendpaint', (data) ->
     color = users[socket.username]?.color || default_color
     socket.broadcast.emit 'updatepaint', data, color
+    if drawhistory.length > limit
+      drawhistory.splice(0, 1)
     drawhistory.push
       username: socket.username
       data: data
