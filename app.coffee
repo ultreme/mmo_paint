@@ -43,6 +43,10 @@ io.sockets.on 'connection', (socket) ->
       socket.emit 'updatepaint', drawhistory[i].data, users[drawhistory[i].username].color
 
   socket.on 'disconnect', ->
+    #users["#{socket.username}-#{Math.random()}"] = users[socket.username]
+    delete users[socket.username]
+    io.sockets.emit 'updateusers', users
+    return
     socket.broadcast.emit 'clearpaint'
     temphistory = []
     for i in [0...drawhistory.length]
