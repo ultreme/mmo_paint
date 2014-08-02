@@ -80,11 +80,28 @@ $(document).ready(function () {
     socket.on('retryusername', retryAddUser);
 });
 
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
+    console.log('Query variable %s not found', variable);
+}
+
 function addUser(text) {
+    var username = null;
     if (!text) {
         text = "What's your name?";
+        username = getQueryVariable('username');
     }
-    socket.emit('adduser', prompt(text));
+    if (!username) {
+        username = prompt(text);
+    }
+    socket.emit('adduser', username);
 }
 
 function processMessage(data, color) {
