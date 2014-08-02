@@ -17,7 +17,10 @@ app.get '/', (req, res) ->
   res.response.redirect 'default.html'
 
 users = {}
-usercolors = ["#ff0000", "#00ff00", "#0000ff", "#c49a1b", "#b63bcc", "#3ddbe3", "#f77502"]
+usercolors = [
+  "#ff0000", "#00ff00", "#0000ff", "#c49a1b", "#b63bcc", "#3ddbe3",
+  "#f77502", "#9932CC", "#9400D3",
+]
 colorindex = 0
 drawhistory = []
 
