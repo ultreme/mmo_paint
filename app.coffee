@@ -23,12 +23,14 @@ usercolors = [
 ]
 colorindex = 0
 drawhistory = []
+default_color = '#888888'
 
 
 io.sockets.on 'connection', (socket) ->
 
   socket.on 'sendpaint', (data) ->
-    socket.broadcast.emit 'updatepaint', data, users[socket.username].color
+    color = users[socket.username]?.color || default_color
+    socket.broadcast.emit 'updatepaint', data, color
     drawhistory.push
       username: socket.username
       data: data
@@ -43,7 +45,8 @@ io.sockets.on 'connection', (socket) ->
     socket.emit 'setuser', user
     io.sockets.emit 'updateusers', users
     for i in [0...drawhistory.length]
-      socket.emit 'updatepaint', drawhistory[i].data, users[drawhistory[i].username].color
+      color = users[drawhistory[i]?.username]?.color || default_color
+      socket.emit 'updatepaint', drawhistory[i].data, color
 
   socket.on 'disconnect', ->
     #users["#{socket.username}-#{Math.random()}"] = users[socket.username]
