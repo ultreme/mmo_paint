@@ -24,7 +24,7 @@ usercolors = [
 colorindex = 0
 drawhistory = []
 default_color = '#888888'
-limit = 100
+limit = 250
 
 
 io.sockets.on 'connection', (socket) ->
